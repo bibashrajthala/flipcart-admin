@@ -10,6 +10,9 @@ import Home from "./containers/Home";
 import SignIn from "./containers/SignIn";
 import SignUp from "./containers/SignUp";
 import { isUserLoggedIn } from "./slices/auth/auth.slice";
+import Orders from "./containers/Orders";
+import Products from "./containers/Products";
+import CategoriesList from "./containers/Categories";
 
 function App() {
   const navigate = useNavigate();
@@ -28,14 +31,19 @@ function App() {
       }
     }
   }, []);
+
   return (
     <div>
       <Routes>
-        <Route element={<Layout />}>
+        <Route element={<Layout sidebar={true} />}>
           <Route path="/" element={<Privateroutes />}>
             <Route index element={<Home />} />
+            <Route path="/category" element={<CategoriesList />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/orders" element={<Orders />} />
           </Route>
-          {/* <Route index path="/" element={<Home />} /> */}
+        </Route>
+        <Route element={<Layout sidebar={false} />}>
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
         </Route>

@@ -8,6 +8,9 @@ interface MyData {
   token: string;
   user: UserData;
 }
+interface MyLogoutData {
+  message: string;
+}
 
 // error type returned by thunk
 interface MyKnownError {
@@ -23,6 +26,7 @@ interface InitialLoginState {
   token: string;
   user: UserData;
   error: MyKnownError | null;
+  message: string;
 }
 
 const initialState = {
@@ -31,6 +35,7 @@ const initialState = {
   token: "",
   user: {},
   error: null,
+  message: "",
 } as InitialLoginState;
 
 const loginPending = ["auth/loginUser/pending", "auth/checkLogin/pending"];
@@ -69,21 +74,43 @@ export const isUserLoggedIn = createAsyncThunk("auth/checkLogin", async () => {
   }
 });
 
-// export const logout = createAsyncThunk("auth/logout", async () => {
-//   localStorage.clear();
-// });
+export const logout = createAsyncThunk("auth/logout", async (_, thunkApi) => {
+  try {
+    const response = await axios.post(`/api/admin/signout`);
+    console.log(response);
+    const data = await response.data;
+
+    return data as MyLogoutData;
+  } catch (error: any) {
+    console.log(error);
+    return thunkApi.rejectWithValue(error.response.data as MyKnownError);
+  }
+});
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logout: (state) => {
-      // console.log("logout");
-      localStorage.clear();
-      return initialState;
-    },
+    // logout: (state) => {
+    //   // console.log("logout");
+    //   localStorage.clear();
+    //   return initialState;
+    // },
   },
   extraReducers: (builder) => {
+    builder.addCase(logout.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(logout.fulfilled, (state, action) => {
+      localStorage.clear();
+      return { ...initialState, message: action.payload.message };
+    });
+    builder.addCase(logout.rejected, (state, action) => {
+      state.loading = false;
+      if (action.payload) {
+        state.error = action.payload;
+      }
+    });
     // builder.addCase(login.pending, (state, action) => {
     builder.addMatcher(
       (action) => loginPending.includes(action.type),
@@ -120,6 +147,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+// export const { logout } = authSlice.actions;
 
 export default authSlice.reducer;

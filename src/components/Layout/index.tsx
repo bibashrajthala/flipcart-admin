@@ -1,34 +1,34 @@
 import React from "react";
-import Header from "../Header";
+import Header from "./Header";
 import { Outlet } from "react-router-dom";
-import { useAppSelector, RootState } from "../../store";
+import Sidebar from "./Sidebar/index";
 
 interface Props {
   children?: JSX.Element | string;
+  sidebar?: boolean;
 }
 
 const Layout = (props: Props) => {
-  const isAuthenticated = useAppSelector(
-    (state: RootState) => state.auth.isAuthenticated
-  );
+  const { sidebar } = props;
   return (
     <div>
       <Header />
 
-      {isAuthenticated ? (
-        <div className="grid grid-cols-[200px_minmax(900px,_1fr)]">
-          <div className="bg-gray-200 shadow-inner sticky top-0 left-0 bottom-0">
-            SideBar
-          </div>
-          <div className="border border-red-500 border-solid p-5">
+      {sidebar ? (
+        <div className="grid grid-cols-[200px_minmax(900px,_1fr)] mt-16">
+          {/* header height is 4rem(64 px) so margintop of it is mt-16=4rem=64px and sidebar is 100vh-4rem so that header + sidebar is 100vh */}
+          <aside className="bg-gray-200 shadow-inner sticky top-0 left-0 bottom-0 min-h-[calc(100vh-4rem)]">
+            <Sidebar />
+          </aside>
+          <main className="border border-red-500 border-solid p-5">
             Container
             <Outlet />
-          </div>
+          </main>
         </div>
       ) : (
-        <div className="flex items-center justify-center p-10">
+        <main className="flex items-center justify-center p-10 mt-16">
           <Outlet />
-        </div>
+        </main>
       )}
     </div>
   );

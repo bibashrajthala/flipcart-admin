@@ -15,3 +15,11 @@ export interface UserData {
   email: string;
   profilePicture?: string;
 }
+
+export interface Category {
+  _id: string;
+  name: string;
+  slug: string;
+  categoryImage?: string;
+  children: Category[];
+}

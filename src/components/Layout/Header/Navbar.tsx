@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-import { useAppDispatch, useAppSelector, RootState } from "../../store";
-import { logout } from "../../slices/auth/auth.slice";
+import { useAppDispatch, useAppSelector, RootState } from "../../../store";
+import { logout } from "../../../slices/auth/auth.slice";
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
@@ -16,7 +16,7 @@ const Navbar = () => {
   const renderLoggedInComponents = () => {
     return (
       <div>
-        <button className="nav-link" onClick={handleSignOut}>
+        <button className="navLink" onClick={handleSignOut}>
           Sign Out
         </button>
       </div>
@@ -24,7 +24,7 @@ const Navbar = () => {
   };
   const renderNotLoggedInComponents = () => {
     return (
-      <ul className="flex gap-x-10 items-center ">
+      <ul className="flex gap-x-10 items-center  ">
         <li>
           <NavLink
             to="/signin"
@@ -50,7 +50,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-gray-800 text-white flex justify-between items-center px-4 py-2">
+    <nav className="bg-gray-800 text-white flex justify-between items-center px-4 py-2 absolute top-0 left-0 right-0 z-10 h-16">
       <h1>
         <Link to="/" className="text-xl">
           Admin Dashboard
